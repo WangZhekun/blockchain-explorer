@@ -34,7 +34,7 @@ var logger = utils.getLogger('Admin.js');
  *
  *
  * @class
- * @extends Remote
+ * @extends Remote 是所有Orderer、Peer、MemberServicespeer节点的父类
  */
 var Admin = class extends Remote {
 

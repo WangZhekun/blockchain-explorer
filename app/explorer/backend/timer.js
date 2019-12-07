@@ -14,8 +14,8 @@
  limitations under the License.
  */
 var Metrics = require('./metrics')
-var BlockListener = require('./BlockListener')
-var BlockScanner = require('./BlockScanner')
+var BlockListener = require('./BlockListener') // 创建node事件触发器实例，主要监听区块相关的同步事件
+var BlockScanner = require('./BlockScanner') // channel、peer、chaincode、区块、交易的同步
 
 
 
@@ -23,26 +23,32 @@ var blockPerMinMeter = Metrics.blockMetrics
 var txnPerSecMeter = Metrics.txnPerSecMeter
 var txnPerMinMeter = Metrics.txMetrics
 
+/**
+ * 启动Meter计时器，同步channel、chaincode、peer、orderer、block
+ * @param {Object} platform Platform的实例，封装与fabric的交互
+ * @param {Object} persistance 数据库服务
+ * @param {Object} broadcaster websocket服务实例
+ */
 async function start(platform, persistance, broadcaster) {
 
-        blockScanner = new BlockScanner(platform, persistance, broadcaster);
-        blockListener = new BlockListener(blockScanner);
+        blockScanner = new BlockScanner(platform, persistance, broadcaster); // channel、peer、chaincode、区块、交易的同步
+        blockListener = new BlockListener(blockScanner); // 创建node事件触发器实例，主要监听区块相关的同步事件
 
-        setInterval(function () {
+        setInterval(function () { // 每500毫秒给meter增加一个状态
             blockPerMinMeter.push(0)
             txnPerSecMeter.push(0)
             txnPerMinMeter.push(0)
         }, 500);
 
         //Sync Block
-        blockListener.emit('syncChannels');
-        blockListener.emit('syncChaincodes');
-        blockListener.emit('syncPeerlist');
+        blockListener.emit('syncChannels'); // 触发syncChannels事件，同步channel
+        blockListener.emit('syncChaincodes'); // 触发syncChaincodes事件，同步chaincode
+        blockListener.emit('syncPeerlist'); // 触发syncPeerlist事件，同步peer
 		// ====================Orderer BE-303=====================================
-		blockListener.emit('syncOrdererlist');
+		blockListener.emit('syncOrdererlist'); // 触发syncOrdererlist事件，同步orderer
 		// ====================Orderer BE-303=====================================
-        blockListener.emit('syncBlock');
-        blockListener.emit('syncChannelEventHubBlock');
+        blockListener.emit('syncBlock'); // 触发syncBlock事件，同步block
+        blockListener.emit('syncChannelEventHubBlock'); // 触发syncChannelEventHubBlock事件 TODO：BlockListener没有这个事件
 }
 
 

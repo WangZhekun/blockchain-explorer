@@ -17,6 +17,9 @@ var Stats = require('fast-stats').Stats;
 var helper=require('../../helper.js')
 var logger = helper.getLogger('metrics');
 
+/**
+ * TODO：问题：这个类是用来干什么的？
+ */
 class Metrics {
     constructor(size=10){
         this.size=size

@@ -14,22 +14,42 @@ class MetricService {
 
 
         //==========================query counts ==========================
+    /**
+     * 查询指定channel上的chaincode的数量
+     * @param {string} channelName channel名
+     */
     getChaincodeCount(channelName) {
       return sql.getRowsBySQlCase(`select count(1) c from chaincodes where channelname='${channelName}' `)
     }
 
+    /**
+     * 查询指定channel上的peer的数量
+     * @param {string} channelName channel名
+     */
     getPeerlistCount(channelName) {
       return sql.getRowsBySQlCase(`select count(1) c from peer where name='${channelName}' `)
     }
 
+    /**
+     * 查询指定channel上的交易的数量
+     * @param {string} channelName channel名
+     */
     getTxCount(channelName) {
       return sql.getRowsBySQlCase(`select count(1) c from transaction where channelname='${channelName}'`)
     }
 
+    /**
+     * 查询指定channel上的区块的数量
+     * @param {string} channelName channel名
+     */
     getBlockCount(channelName) {
       return sql.getRowsBySQlCase(`select max(blocknum) c from blocks where channelname='${channelName}'`)
     }
 
+    /**
+     * 查询加入指定cahnnel的peer列表
+     * @param {string} channelName channel名
+     */
     async getPeerData(channelName) {
       let peerArray = []
       var c1 = await sql.getRowsBySQlNoCondtion(`select c.name as name,c.requests as requests,c.server_hostname as server_hostname from peer c where c.name='${channelName}'`);
@@ -40,6 +60,9 @@ class MetricService {
       return peerArray
     }
 //BE -303
+  /**
+   * 获取所有orderer
+   */
 	async getOrdererData() {
       let ordererArray = []
       var c1 = await sql.getRowsBySQlNoCondtion(`select c.requests as requests,c.server_hostname as server_hostname from orderer c`);
@@ -50,6 +73,10 @@ class MetricService {
       return ordererArray
     }
 //BE -303
+    /**
+     * 查询指定channel上的每一个chaincode的交易数量
+     * @param {string} channelName channel名
+     */
     async getTxPerChaincodeGenerate(channelName) {
       let txArray = []
       var c = await sql.getRowsBySQlNoCondtion(`select c.channelname as channelname,c.name as chaincodename,c.version as version,c.path as path ,txcount  as c from chaincodes c where  c.channelname='${channelName}' `);
@@ -63,6 +90,11 @@ class MetricService {
 
     }
 
+    /**
+     * 查询指定channel上的每一个chaincode的交易数量
+     * @param {string} channelName channel名
+     * @param {function} cb 回调函数
+     */
     async getTxPerChaincode(channelName, cb) {
       try {
         var txArray = await this.getTxPerChaincodeGenerate(channelName);
@@ -73,6 +105,10 @@ class MetricService {
       }
     }
 
+    /**
+     * 查询指定channel的统计数据，包括chaincode、交易、区块、peer的数量
+     * @param {strign} channelName channel名
+     */
     async getStatusGenerate(channelName) {
       var chaincodeCount = await this.getChaincodeCount(channelName)
       if (!chaincodeCount) chaincodeCount = 0
@@ -87,6 +123,11 @@ class MetricService {
       return { 'chaincodeCount': chaincodeCount.c, 'txCount': txCount.c, 'latestBlock': blockCount.c, 'peerCount': peerCount.c }
     }
 
+    /**
+     * 查询指定channel的统计数据，包括chaincode、交易、区块、peer的数量
+     * @param {strign} channelName channel名
+     * @param {function} cb 回调函数
+     */
     async getStatus(channelName, cb) {
 
       try {
@@ -98,6 +139,11 @@ class MetricService {
 
     }
 
+    /**
+     * 查询加入指定cahnnel的peer列表
+     * @param {string} channelName channel名
+     * @param {function} cb 回调函数
+     */
     async getPeerList(channelName, cb) {
       try {
           var peerArray = await this.getPeerData(channelName);
@@ -107,7 +153,11 @@ class MetricService {
         cb([])
       }
     }
-	//BE -303
+  //BE -303
+  /**
+   * 获取所有orderer
+   * @param {function} cb 回调函数
+   */
 	async getOrdererList(cb) {
       try {
           var ordererArray = await this.getOrdererData();
@@ -120,6 +170,11 @@ class MetricService {
 //BE -303
     //transaction metrics
 
+    /**
+     * 查询现在时间之前的几小时的每分钟产生的交易数量
+     * @param {string} channelName channel名
+     * @param {number} hours 现在之前的几小时
+     */
     getTxByMinute(channelName, hours) {
       let sqlPerMinute = ` with minutes as (
             select generate_series(
@@ -139,6 +194,11 @@ class MetricService {
       return sql.getRowsBySQlQuery(sqlPerMinute);
     }
 
+    /**
+     * 查询现在时间之前的几天的每小时产生的交易数量
+     * @param {string} channelName channel名
+     * @param {number} days 现在之前的几天
+     */
     getTxByHour(channelName, day) {
       let sqlPerHour = ` with hours as (
             select generate_series(
@@ -158,6 +218,11 @@ class MetricService {
       return sql.getRowsBySQlQuery(sqlPerHour);
     }
 
+    /**
+     * 查询现在时间之前的几天的每天产生的交易数量
+     * @param {string} channelName channel名
+     * @param {number} days 现在之前的几天
+     */
     getTxByDay(channelName, days) {
       let sqlPerDay = ` with days as (
             select generate_series(
@@ -177,6 +242,11 @@ class MetricService {
       return sql.getRowsBySQlQuery(sqlPerDay);
     }
 
+    /**
+     * 查询现在时间之前的几周的每周产生的交易数量
+     * @param {string} channelName channel名
+     * @param {number} weeks 现在之前的几周
+     */
     getTxByWeek(channelName, weeks) {
       let sqlPerWeek = ` with weeks as (
             select generate_series(
@@ -196,6 +266,11 @@ class MetricService {
       return sql.getRowsBySQlQuery(sqlPerWeek);
     }
 
+    /**
+     * 查询现在时间之前的几个月的每月产生的交易数量
+     * @param {string} channelName channel名
+     * @param {number} months 现在之前的几个月
+     */
     getTxByMonth(channelName, months) {
       let sqlPerMonth = ` with months as (
             select generate_series(
@@ -216,6 +291,11 @@ class MetricService {
       return sql.getRowsBySQlQuery(sqlPerMonth);
     }
 
+    /**
+     * 查询现在时间之前的几年的每年产生的交易数量
+     * @param {string} channelName channel名
+     * @param {number} years 现在之前的几年
+     */
     getTxByYear(channelName, years) {
       let sqlPerYear = ` with years as (
             select generate_series(
@@ -236,7 +316,11 @@ class MetricService {
     }
 
     // block metrics API
-
+    /**
+     * 查询现在时间之前的几小时的每分钟产生的区块数量
+     * @param {string} channelName channel名
+     * @param {number} hours 现在之前的几小时
+     */
     getBlocksByMinute(channelName, hours) {
       let sqlPerMinute = ` with minutes as (
             select generate_series(
@@ -256,6 +340,11 @@ class MetricService {
       return sql.getRowsBySQlQuery(sqlPerMinute);
     }
 
+    /**
+     * 查询现在时间之前的几天的每小时产生的区块数量
+     * @param {string} channelName channel名
+     * @param {number} days 现在之前的几天
+     */
     getBlocksByHour(channelName, days) {
       let sqlPerHour = ` with hours as (
             select generate_series(
@@ -275,6 +364,11 @@ class MetricService {
       return sql.getRowsBySQlQuery(sqlPerHour);
     }
 
+    /**
+     * 查询现在时间之前的几天的每天产生的区块数量
+     * @param {string} channelName channel名
+     * @param {number} days 现在之前的几天
+     */
     getBlocksByDay(channelName, days) {
       let sqlPerDay = `  with days as (
             select generate_series(
@@ -294,6 +388,11 @@ class MetricService {
       return sql.getRowsBySQlQuery(sqlPerDay);
     }
 
+    /**
+     * 查询现在时间之前的几周的每周产生的区块数量
+     * @param {string} channelName channel名
+     * @param {number} weeks 现在之前的几周
+     */
     getBlocksByWeek(channelName, weeks) {
       let sqlPerWeek = ` with weeks as (
             select generate_series(
@@ -313,6 +412,11 @@ class MetricService {
       return sql.getRowsBySQlQuery(sqlPerWeek);
     }
 
+    /**
+     * 查询现在时间之前的几个月的每月产生的区块数量
+     * @param {string} channelName channel名
+     * @param {number} months 现在之前的几个月
+     */
     getBlocksByMonth(channelName, months) {
       let sqlPerMonth = `  with months as (
             select generate_series(
@@ -332,6 +436,11 @@ class MetricService {
       return sql.getRowsBySQlQuery(sqlPerMonth);
     }
 
+    /**
+     * 查询现在时间之前的几年的每年产生的区块数量
+     * @param {string} channelName channel名
+     * @param {number} years 现在之前的几年
+     */
     getBlocksByYear(channelName, years) {
       let sqlPerYear = ` with years as (
             select generate_series(
@@ -351,6 +460,10 @@ class MetricService {
       return sql.getRowsBySQlQuery(sqlPerYear);
     }
 
+    /**
+     * 查询指定channel的各组织的交易数量
+     * @param {string} channelName channel名
+     */
     getTxByOrgs(channelName) {
       let sqlPerOrg = ` select count(creator_msp_id), creator_msp_id
       from transaction

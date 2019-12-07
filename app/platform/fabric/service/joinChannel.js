@@ -5,12 +5,20 @@
 var util = require('util');
 var path = require('path');
 var helper = require('../../../helper.js');
-var orgPath = path.join(__dirname, '../artifacts/channel/org1.yaml');
-var networkCfgPath = path.join(__dirname, '../artifacts/channel/network-config-tls.yaml');
+var orgPath = path.join(__dirname, '../artifacts/channel/org1.yaml'); // 组织配置文件
+var networkCfgPath = path.join(__dirname, '../artifacts/channel/network-config-tls.yaml'); // 网络配置文件
 var logger = helper.getLogger('joinChannel');
 
 /*
  * Have an organization join a channel
+ */
+/**
+ * 将peers中的peer节点加入到指定cahnnel中
+ * TODO：该方法不完整
+ * @param {string} channel_name channel名
+ * @param {Array<string>} peers peer名列表
+ * @param {string} org_name 组织名
+ * @param {Object} platform Platform实例
  */
 var joinChannel = async function (channel_name, peers, org_name, platform) {
     logger.debug('\n\n============ Join Channel start ============\n')
@@ -20,9 +28,9 @@ var joinChannel = async function (channel_name, peers, org_name, platform) {
 
         logger.info('Calling peers in organization "%s" to join the channel', org_name);
         // first setup the client for this org
-        var client = await platform.getClientFromPath(org_name, orgPath, networkCfgPath);
+        var client = await platform.getClientFromPath(org_name, orgPath, networkCfgPath); // 根据配置文件创建fabric-client实例
         logger.debug('Successfully got the fabric client for the organization "%s"', org_name);
-        var channel = client.getChannel(channel_name);
+        var channel = client.getChannel(channel_name); // 获取制定名称的channel
         if (!channel) {
             let message = util.format('Channel %s was not defined in the connection profile', channel_name);
             logger.error(message);
@@ -34,7 +42,7 @@ var joinChannel = async function (channel_name, peers, org_name, platform) {
         let request = {
             txId: client.newTransactionID(true) //get an admin based transactionID
         };
-        let genesis_block = await channel.getGenesisBlock(request);
+        let genesis_block = await channel.getGenesisBlock(request); // 获取channel的创始区块
 
         // tell each peer to join and wait for the event hub of each peer to tell us
         // that the channel has been created on each peer
@@ -45,8 +53,8 @@ var joinChannel = async function (channel_name, peers, org_name, platform) {
             txId: client.newTransactionID(true), //get an admin based transactionID
             block: genesis_block
         };
-        let join_promise = channel.joinChannel(join_request);
-        promises.push(join_promise);
+        let join_promise = channel.joinChannel(join_request); // 将peers加入到channel
+        promises.push(join_promise); // TODO：promises只有一个元素
         let results = await Promise.all(promises);
         logger.debug(util.format('Join Channel R E S P O N S E : %j', results));
 
@@ -67,8 +75,8 @@ var joinChannel = async function (channel_name, peers, org_name, platform) {
         // now see what each of the event hubs reported
         for (let i in results) {
             let event_hub_result = results[i];
-            let event_hub = event_hubs[i];
-            let block_registration_number = block_registration_numbers[i];
+            let event_hub = event_hubs[i]; // TODO：这个变量没有定义
+            let block_registration_number = block_registration_numbers[i]; // TODO：block_registration_numbers数组没有保存内容
             logger.debug('Event results for event hub :%s', event_hub._ep._endpoint.addr);
             if (typeof event_hub_result === 'string') {
                 logger.debug(event_hub_result);
@@ -76,7 +84,7 @@ var joinChannel = async function (channel_name, peers, org_name, platform) {
                 if (!error_message) error_message = event_hub_result.toString();
                 logger.debug(event_hub_result.toString());
             }
-            event_hub.unregisterBlockEvent(block_registration_number);
+            event_hub.unregisterBlockEvent(block_registration_number); // 
         }
     } catch (error) {
         logger.error('Failed to join channel due to error: ' + error.stack ? error.stack : error);
@@ -84,7 +92,7 @@ var joinChannel = async function (channel_name, peers, org_name, platform) {
     }
 
     // need to shutdown open event streams
-    all_eventhubs.forEach((eh) => {
+    all_eventhubs.forEach((eh) => { // 断开所有事件监听器与Peer节点的连接
         eh.disconnect();
     });
 

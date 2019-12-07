@@ -2,12 +2,21 @@
 *    SPDX-License-Identifier: Apache-2.0
 */
 
-var requtil = require("./requestutils.js");
+var requtil = require("./requestutils.js"); // 对HTTP请求的处理工具
+
+/**
+ * 给Explorer应用定义访问数据库的reset请求
+ * @param {Object} app Explorer应用实例
+ * @param {Object} persistance 数据库服务
+ */
 const dbroutes = (app, persist) => {
 
-  var statusMetrics = persist.getMetricService();
-  var crudService = persist.getCrudService();
+  var statusMetrics = persist.getMetricService(); // 数据库统计数据服务
+  var crudService = persist.getCrudService(); // 数据库数据持久化服务
 
+  /**
+   * 获取指定channel的统计数据
+   */
   app.get("/api/status/:channel", function (req, res) {
     let channelName = req.params.channel;
     if (channelName) {
@@ -31,7 +40,7 @@ const dbroutes = (app, persist) => {
 
 
   /***
-  Transaction count
+  Transaction count 获取指定channel上指定编号的区块的交易数量
   GET /api/block/get -> /api/block/transactions/
   curl -i 'http://<host>:<port>/api/block/transactions/<channel>/<number>'
   Response:
@@ -61,7 +70,7 @@ const dbroutes = (app, persist) => {
 
   //
   /***
-  Transaction Information
+  Transaction Information 获取指定channel，指定ID的交易信息
   GET /api/tx/getinfo -> /api/transaction/<txid>
   curl -i 'http://<host>:<port>/api/transaction/<channel>/<txid>'
   Response:
@@ -89,7 +98,7 @@ const dbroutes = (app, persist) => {
 
 
   /***
-  Transaction list
+  Transaction list 获取指定channel上的指定编号区块及以后的指定交易ID及以后的所有交易信息
   GET /api/txList/
   curl -i 'http://<host>:<port>/api/txList/<channel>/<blocknum>/<txid>/<limitrows>/<offset>'
   Response:
@@ -117,7 +126,7 @@ const dbroutes = (app, persist) => {
   });
 
 
-  /***Peer List
+  /***Peer List 获取加入了指定channel的peer列表
   GET /peerlist -> /api/peers
   curl -i 'http://<host>:<port>/api/peers/<channel>'
   Response:
@@ -141,7 +150,7 @@ const dbroutes = (app, persist) => {
 
 
   /***
-   List of blocks and transaction list per block
+   List of blocks and transaction list per block 获取指定channel上的指定区块编号及以后的区块列表
   GET /api/blockAndTxList
   curl -i 'http://<host>:<port>/api/blockAndTxList/channel/<blockNum>/<limitrows>/<offset>'
   Response:
@@ -171,7 +180,8 @@ const dbroutes = (app, persist) => {
   // TRANSACTION METRICS
 
   /***
-   Transactions per minute with hour interval
+   Transactions per minute with hour interval 查询现在时间之前的几个小时的每分钟产生的交易数量
+   TODO:问题：SQL看不大明白？
   GET /api/txByMinute
   curl -i 'http://<host>:<port>/api/txByMinute/<channel>/<hours>'
   Response:
@@ -197,7 +207,7 @@ const dbroutes = (app, persist) => {
   });
 
   /***
-   Transactions per hour(s) with day interval
+   Transactions per hour(s) with day interval 查询现在时间之前的几天的每小时产生的交易数量
   GET /api/txByHour
   curl -i 'http://<host>:<port>/api/txByHour/<channel>/<days>'
   Response:
@@ -224,7 +234,7 @@ const dbroutes = (app, persist) => {
   // BLOCK METRICS
 
   /***
-   Blocks per minute with hour interval
+   Blocks per minute with hour interval 查询现在时间之前的几个小时的每分钟产生的区块数量
   GET /api/blocksByMinute
   curl -i 'http://<host>:<port>/api/blocksByMinute/<channel>/<hours>'
   Response:
@@ -249,7 +259,7 @@ const dbroutes = (app, persist) => {
   });
 
   /***
-   Blocks per hour(s) with day interval
+   Blocks per hour(s) with day interval 查询现在时间之前的几天的每小时产生的区块数量
   GET /api/blocksByHour
   curl -i 'http://<host>:<port>/api/blocksByHour/<channel>/<days>'
   Response:
@@ -274,7 +284,7 @@ const dbroutes = (app, persist) => {
   });
 
   /***
-   Transactions by Organization(s)
+   Transactions by Organization(s) 查询指定channel上各组织的交易数量
   GET /api/txByOrg
   curl -i 'http://<host>:<port>/api/txByOrg/<channel>'
   Response:
@@ -297,7 +307,7 @@ const dbroutes = (app, persist) => {
   });
 
  /**
-          Channels
+          Channels 查询所有channel
           GET /channels -> /api/channels/info
           curl -i 'http://<host>:<port>/api/channels/<info>'
           Response:

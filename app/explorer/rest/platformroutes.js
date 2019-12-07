@@ -1,26 +1,32 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
-var ledgerMgr = require("./ledgerMgr");
+var ledgerMgr = require("./ledgerMgr"); // node事件触发器实例
 
-var PlatformBuilder = require("../../platform/PlatformBuilder.js");
+var PlatformBuilder = require("../../platform/PlatformBuilder.js"); // Platform实例的工厂，Platform实例主要是对fabric的访问的封装，
 
-var requtil = require("./requestutils");
+var requtil = require("./requestutils"); // 对HTTP请求的处理工具
 var helper = require('../../helper.js')
-var chs = require("../../explorer/rest/logical/channelService.js");
+var chs = require("../../explorer/rest/logical/channelService.js"); // 创建channel服务
 var logger = helper.getLogger("main");
 
 
-
+/**
+ * 给Explorer应用定义访问区块链平台的reset请求
+ * @param {Object} app Explorer应用实例
+ * @param {string} pltfrm 区块链平台名称
+ * @param {Object} persistance 数据库服务
+ */
 const platformroutes = async function (app, pltfrm, persistance) {
 
-  platform = await PlatformBuilder.build(pltfrm);
-  proxy = platform.getDefaultProxy();
-  statusMetrics = persistance.getMetricService();
-  crudService = persistance.getCrudService();
+  // 定义全局的platform、proxy、statusMetrics、crudService TODO：优化
+  platform = await PlatformBuilder.build(pltfrm); // 创建指定区块链平台的Platform实例
+  proxy = platform.getDefaultProxy(); // 获取默认的组织和peer的Proxy实例
+  statusMetrics = persistance.getMetricService(); // 数据库统计数据服务
+  crudService = persistance.getCrudService(); // 数据库数据持久化服务
 
   /***
-      Block by number
+      Block by number 获取指定channel的指定编号的区块
       GET /api/block/getinfo -> /api/block
       curl -i 'http://<host>:<port>/api/block/<channel>/<number>'
       *
@@ -44,7 +50,7 @@ const platformroutes = async function (app, pltfrm, persistance) {
   });
 
   /**
-      Return list of channels
+      Return list of channels 获取默认peer加入的所有channel名
       GET /channellist -> /api/channels
       curl -i http://<host>:<port>/api/channels
       Response:
@@ -60,7 +66,7 @@ const platformroutes = async function (app, pltfrm, persistance) {
   app.get("/api/channels", function (req, res) {
     var channels = [],
       counter = 0;
-    var channels = platform.getChannels();
+    var channels = platform.getChannels(); // 获取默认peer加入的所有channel名
 
     var response = {
       status: 200
@@ -70,7 +76,7 @@ const platformroutes = async function (app, pltfrm, persistance) {
   });
 
   /**
-  Return current channel
+  Return current channel 获取默认channel
   GET /api/curChannel
   curl -i 'http://<host>:<port>/api/curChannel'
   */
@@ -81,14 +87,14 @@ const platformroutes = async function (app, pltfrm, persistance) {
   });
 
   /**
-  Return change channel
+  Return change channel 修改默认channel名
   POST /api/changeChannel
   curl -i 'http://<host>:<port>/api/curChannel'
   */
   app.get("/api/changeChannel/:channelName", function (req, res) {
     let channelName = req.params.channelName;
-    proxy.changeChannel(channelName);
-    ledgerMgr.ledgerEvent.emit("changeLedger");
+    proxy.changeChannel(channelName); // 修改默认channel名
+    ledgerMgr.ledgerEvent.emit("changeLedger"); // 触发changeLedger事件 TODO：该事件没有监听
     res.send({
       currentChannel: proxy.getDefaultChannel()
     });
@@ -106,7 +112,7 @@ const platformroutes = async function (app, pltfrm, persistance) {
   */
 
   /*
-  Create new channel
+  Create new channel 创建channel
   POST /api/channel
   Content-Type : application/x-www-form-urlencoded
   {channelName:"newchannel02"
@@ -121,8 +127,8 @@ const platformroutes = async function (app, pltfrm, persistance) {
   app.post('/api/channel', async function (req, res) {
     try {
       // upload channel config, and org config
-      let artifacts = await requtil.aSyncUpload(req, res);
-      let chCreate = await chs.createChannel(artifacts, platform, crudService);
+      let artifacts = await requtil.aSyncUpload(req, res); // 异步调用multer，对上传的文件进行处理，重新组装请求参数
+      let chCreate = await chs.createChannel(artifacts, platform, crudService); // 创建channel TODO：问题：这里需要上传文件，为何还要生成tx文件？
       let channelResponse = {
         success: chCreate.success,
         message: chCreate.message
@@ -140,7 +146,7 @@ const platformroutes = async function (app, pltfrm, persistance) {
   });
 
   /***
-      An API to join channel
+      An API to join channel 将指定的多个peer节点加入到指定channel
   POST /api/joinChannel
 
   curl -X POST -H "Content-Type: application/json" -d '{ "orgName":"Org1","channelName":"newchannel"}' http://localhost:8080/api/joinChannel
@@ -153,7 +159,7 @@ const platformroutes = async function (app, pltfrm, persistance) {
     var peers = req.body.peers;
     var orgName = req.body.orgName;
     if (channelName && peers && orgName) {
-      proxy.joinChannel(channelName, peers, orgName, platform).then(resp => {
+      proxy.joinChannel(channelName, peers, orgName, platform).then(resp => { // 将指定的多个peer节点加入到指定channel
         return res.send(resp);
       });
     } else {
@@ -162,7 +168,7 @@ const platformroutes = async function (app, pltfrm, persistance) {
   });
 
   /**
-      Chaincode list
+      Chaincode list 获取指定channel上的所有chaincode
       GET /chaincodelist -> /api/chaincode
       curl -i 'http://<host>:<port>/api/chaincode/<channel>'
       Response:
@@ -180,9 +186,9 @@ const platformroutes = async function (app, pltfrm, persistance) {
   app.get("/api/chaincode/:channel", function (req, res) {
     let channelName = req.params.channel;
     if (channelName) {
-      statusMetrics.getTxPerChaincode(channelName, async function (data) {
+      statusMetrics.getTxPerChaincode(channelName, async function (data) { // 查询指定channel上的chaincode
         for (let chaincode of data) {
-          let temp = await proxy.loadChaincodeSrc(chaincode.path);
+          let temp = await proxy.loadChaincodeSrc(chaincode.path); // 读取chaincode文件内容
           chaincode.source = temp;
         }
         res.send({
@@ -195,7 +201,8 @@ const platformroutes = async function (app, pltfrm, persistance) {
     }
   });
 
-  /***Peer Status List
+  /***
+   * Peer Status List 获取所有peer的状态 TODO：问题：这个接口不太明白？
   GET /peerlist -> /api/peersStatus
   curl -i 'http://<host>:<port>/api/peersStatus/<channel>'
   Response:
@@ -210,7 +217,7 @@ const platformroutes = async function (app, pltfrm, persistance) {
   app.get("/api/peersStatus/:channel", function (req, res) {
     let channelName = req.params.channel;
     if (channelName) {
-       platform.getPeersStatus(channelName,function (data) {
+       platform.getPeersStatus(channelName,function (data) { // 获取Admin实例的状态
         res.send({ status: 200, peers: data });
       });
     } else {

@@ -4,9 +4,12 @@
 
 var path = require('path');
 var fs = require('fs');
-var sha = require('js-sha256');
-var asn = require('asn1.js');
+var sha = require('js-sha256'); // sha256加密库
+var asn = require('asn1.js'); // BER ASN.1解码器
 
+/**
+ * 在/tmp目录创建以时间戳命名的临时目录
+ */
 var generateDir = async function () {
     var tempDir = '/tmp/' + new Date().getTime();
     try {
@@ -17,6 +20,11 @@ var generateDir = async function () {
     return tempDir
 }
 
+/**
+ * 根据区块信息生成hash值
+ * TODO：问题：这里涉及的asn1.js不是很明白？
+ * @param {Object} header 区块的头信息，包括区块编号、上一个区块的hash，数据区的hash
+ */
 var generateBlockHash = async function (header) {
     let headerAsn = asn.define('headerAsn', function () {
         this.seq().obj(this.key('Number').int(),

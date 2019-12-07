@@ -13,6 +13,11 @@ const errors = {
     lnf: "Location not found",
     erf: "Error reading file"
 };
+
+/**
+ * 读取文件内容
+ * @param {string} path 文件路径或地址
+ */
 async function loadChaincodeSrc(path) {
     if (path.substring(0, 10) === "github.com") {
         path = path.slice(10);

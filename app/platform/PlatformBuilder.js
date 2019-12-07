@@ -4,6 +4,9 @@
 
 var Platform = require('./fabric/Platform.js');
 
+/**
+ * 创建和实例化Platform实例
+ */
 class PlatformBuilder {
 
     static async build(pltfrm) {

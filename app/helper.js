@@ -16,11 +16,15 @@
 
 "use strict";
 var log4js = require("log4js/lib/log4js");
-var appList = [];
+var appList = []; // log的模块名称，除了pgservice模块
 
 var path = require("path");
 var fs = require("fs-extra");
 
+/**
+ * 读取指定目录的全部文件
+ * @param {string} dir 文件目录的路径
+ */
 function readAllFiles(dir) {
   var files = fs.readdirSync(dir);
   var certs = [];
@@ -45,6 +49,10 @@ logger.setLevel('INFO');
 
 */
 
+/**
+ * 获取指定模块名称的logger实例
+ * @param {string} moduleName 模块名称
+ */
 var getLogger = function(moduleName) {
   if (moduleName == "pgservice") {
     var logger = log4js.getLogger("pgservice");

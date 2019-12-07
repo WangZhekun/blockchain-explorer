@@ -15,7 +15,7 @@
  */
 
 var EventEmitter = require('events').EventEmitter;
-var ledgerEvent = new EventEmitter();
+var ledgerEvent = new EventEmitter(); // 创建node事件触发器实例
 
 
 
