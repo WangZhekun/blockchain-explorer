@@ -62,7 +62,6 @@ const platformroutes = async function (app, pltfrm, persistance) {
       ]
       }
       */
-
   app.get("/api/channels", function (req, res) {
     var channels = [],
       counter = 0;
@@ -123,7 +122,6 @@ const platformroutes = async function (app, pltfrm, persistance) {
   <input type="file" name="channelArtifacts" multiple />
   Response: {  success: true, message: "Successfully created channel "   }
   */
-
   app.post('/api/channel', async function (req, res) {
     try {
       // upload channel config, and org config
@@ -153,7 +151,6 @@ const platformroutes = async function (app, pltfrm, persistance) {
 
   Response: {  success: true, message: "Successfully joined peer to the channel "   }
   */
-
   app.post("/api/joinChannel", function (req, res) {
     var channelName = req.body.channelName;
     var peers = req.body.peers;
@@ -182,7 +179,6 @@ const platformroutes = async function (app, pltfrm, persistance) {
         }
       ]
     */
-
   app.get("/api/chaincode/:channel", function (req, res) {
     let channelName = req.params.channel;
     if (channelName) {
@@ -202,7 +198,7 @@ const platformroutes = async function (app, pltfrm, persistance) {
   });
 
   /***
-   * Peer Status List 获取所有peer的状态 TODO：问题：这个接口不太明白？
+   * Peer Status List 获取指定channel上所有peer的状态 TODO：问题：这个接口不太明白？
   GET /peerlist -> /api/peersStatus
   curl -i 'http://<host>:<port>/api/peersStatus/<channel>'
   Response:
@@ -213,7 +209,6 @@ const platformroutes = async function (app, pltfrm, persistance) {
     }
   ]
   */
-
   app.get("/api/peersStatus/:channel", function (req, res) {
     let channelName = req.params.channel;
     if (channelName) {

@@ -81,7 +81,6 @@ const dbroutes = (app, persist) => {
     "type": "header.channel_header.type"
   }
   */
-
   app.get("/api/transaction/:channel/:txid", function (req, res) {
     let txid = req.params.txid;
     let channelName = req.params.channel;
@@ -159,7 +158,6 @@ const dbroutes = (app, persist) => {
   "createdt":"2018-03-13T15:58:45.000Z","txhash":["6740fb70ed58d5f9c851550e092d08b5e7319b526b5980a984b16bd4934b87ac"]}]}
   *
   */
-
   app.get("/api/blockAndTxList/:channel/:blocknum", function (req, res) {
     let channelName = req.params.channel;
     let blockNum = parseInt(req.params.blocknum);
@@ -187,9 +185,7 @@ const dbroutes = (app, persist) => {
   Response:
   {"rows":[{"datetime":"2018-03-13T17:46:00.000Z","count":"0"},{"datetime":"2018-03-13T17:47:00.000Z","count":"0"},{"datetime":"2018-03-13T17:48:00.000Z","count":"0"},{"datetime":"2018-03-13T17:49:00.000Z","count":"0"},{"datetime":"2018-03-13T17:50:00.000Z","count":"0"},{"datetime":"2018-03-13T17:51:00.000Z","count":"0"},
   {"datetime":"2018-03-13T17:52:00.000Z","count":"0"},{"datetime":"2018-03-13T17:53:00.000Z","count":"0"}]}
-
   */
-
   app.get("/api/txByMinute/:channel/:hours", function (req, res) {
     let channelName = req.params.channel;
     let hours = parseInt(req.params.hours);
@@ -214,7 +210,6 @@ const dbroutes = (app, persist) => {
   {"rows":[{"datetime":"2018-03-12T19:00:00.000Z","count":"0"},
   {"datetime":"2018-03-12T20:00:00.000Z","count":"0"}]}
   */
-
   app.get("/api/txByHour/:channel/:days", function (req, res) {
     let channelName = req.params.channel;
     let days = parseInt(req.params.days);
@@ -239,9 +234,7 @@ const dbroutes = (app, persist) => {
   curl -i 'http://<host>:<port>/api/blocksByMinute/<channel>/<hours>'
   Response:
   {"rows":[{"datetime":"2018-03-13T19:59:00.000Z","count":"0"}]}
-
   */
-
   app.get("/api/blocksByMinute/:channel/:hours", function (req, res) {
     let channelName = req.params.channel;
     let hours = parseInt(req.params.hours);
@@ -264,9 +257,7 @@ const dbroutes = (app, persist) => {
   curl -i 'http://<host>:<port>/api/blocksByHour/<channel>/<days>'
   Response:
   {"rows":[{"datetime":"2018-03-13T20:00:00.000Z","count":"0"}]}
-
   */
-
   app.get("/api/blocksByHour/:channel/:days", function (req, res) {
     let channelName = req.params.channel;
     let days = parseInt(req.params.days);
@@ -289,7 +280,6 @@ const dbroutes = (app, persist) => {
   curl -i 'http://<host>:<port>/api/txByOrg/<channel>'
   Response:
   {"rows":[{"count":"4","creator_msp_id":"Org1"}]}
-
   */
   app.get("/api/txByOrg/:channel", function (req, res) {
     let channelName = req.params.channel;
@@ -306,25 +296,24 @@ const dbroutes = (app, persist) => {
     }
   });
 
- /**
-          Channels 查询所有channel
-          GET /channels -> /api/channels/info
-          curl -i 'http://<host>:<port>/api/channels/<info>'
-          Response:
-          [
-            {
-              "channelName": "mychannel",
-              "channel_hash": "",
-              "craetedat": "1/1/2018"
-            }
-          ]
-        */
-
-       app.get("/api/channels/info", function (req, res) {
-        crudService.getChannelsInfo().then(data=>{
-          res.send({ status: 200, channels:data })
-        }).catch(err=>res.send({status:500}))
-    });
+  /**
+    Channels 查询所有channel
+    GET /channels -> /api/channels/info
+    curl -i 'http://<host>:<port>/api/channels/<info>'
+    Response:
+    [
+      {
+        "channelName": "mychannel",
+        "channel_hash": "",
+        "craetedat": "1/1/2018"
+      }
+    ]
+  */
+  app.get("/api/channels/info", function (req, res) {
+    crudService.getChannelsInfo().then(data=>{
+      res.send({ status: 200, channels:data })
+    }).catch(err=>res.send({status:500}))
+  });
 
 
 }
