@@ -29,10 +29,8 @@ var logger = utils.getLogger('Admin.js');
 
 
 /**
- *
- *
- *
- *
+ * 利用_serviceProto.Admin服务来获取指定url的远程节点的状态
+ * TODO：问题：这个类不太明白？
  * @class
  * @extends Remote 是所有Orderer、Peer、MemberServicespeer节点的父类
  */
@@ -55,6 +53,8 @@ var Admin = class extends Remote {
         super(url, opts);
 
         //logger.debug('Peer.const - url: %s timeout: %s', url, this._request_timeout);
+        // Admin服务是peerServer对象中用来实现对服务器、模块日志级别的获取和控制的
+        // this._endpoint是Endpoint的实例，该对象用来表示一个远程的grpc或grpcs协议的服务器
         this._endorserClient = new _serviceProto.Admin(this._endpoint.addr, this._endpoint.creds, this._options);
         this._roles = {};
     }

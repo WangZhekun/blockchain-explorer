@@ -198,7 +198,7 @@ const platformroutes = async function (app, pltfrm, persistance) {
   });
 
   /***
-   * Peer Status List 获取指定channel上所有peer的状态 TODO：问题：这个接口不太明白？
+   * Peer Status List 获取指定channel上所有peer的状态
   GET /peerlist -> /api/peersStatus
   curl -i 'http://<host>:<port>/api/peersStatus/<channel>'
   Response:
