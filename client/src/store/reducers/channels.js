@@ -13,6 +13,7 @@ const InitialState = new Record({
   errors: {}
 });
 
+// 查询所有channel
 const channels = handleActions(
   {
     [actionTypes.CHANNELS]: (state = InitialState(), action) => {

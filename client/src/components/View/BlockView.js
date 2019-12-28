@@ -27,24 +27,31 @@ const copyIcon = {
   margin: "10px"
 };
 
+/**
+ * 区块详情
+ */
 class BlockView extends Component {
   constructor(props, context) {
     super(props, context);
-    this.state = {
+    this.state = { // TODO: loading没用
       loading: false
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) { // props更新前执行
     this.setState({ loading: false });
   }
+
+  /**
+   * 关闭
+   */
   handleClose = () => {
     this.props.onClose();
   };
 
   render() {
     const { classes, blockHash } = this.props;
-    if (!blockHash) {
+    if (!blockHash) { // 区块hash为空
       return (
         <div>
           <Card>
@@ -74,28 +81,28 @@ class BlockView extends Component {
               <Table striped hover responsive className="table-striped">
                 <tbody>
                   <tr>
-                    <th>Channel name:</th>
+                    <th>Channel name:</th>{/** channel名称 */}
                     <td>{blockHash.channelname}</td>
                   </tr>
                   <tr>
-                    <th>ID</th>
+                    <th>ID</th>{/** 区块hash的id */}
                     <td>{blockHash.id}</td>
                   </tr>
                   <tr>
-                    <th>Block Number</th>
+                    <th>Block Number</th>{/** 区块编号 */}
                     <td>{blockHash.blocknum}</td>
                   </tr>
                   <tr>
-                    <th>Created at</th>
+                    <th>Created at</th>{/** 区块创建时间 */}
                     <td>{blockHash.createdt}</td>
                   </tr>
 
                   <tr>
-                    <th>Number of Transactions</th>
+                    <th>Number of Transactions</th>{/** 区块的交易数 */}
                     <td>{blockHash.txcount}</td>
                   </tr>
                   <tr>
-                    <th>Block Hash</th>
+                    <th>Block Hash</th>{/** 区块hash */}
                     <td>
                       {blockHash.blockhash}
                       <button className="copyBtn">
@@ -106,7 +113,7 @@ class BlockView extends Component {
                     </td>
                   </tr>
                   <tr>
-                    <th>Data Hash</th>
+                    <th>Data Hash</th>{/** 数据hash */}
                     <td>
                       {blockHash.datahash}
                       <button className="copyBtn">
@@ -117,7 +124,7 @@ class BlockView extends Component {
                     </td>
                   </tr>
                   <tr>
-                    <th>Prehash</th>
+                    <th>Prehash</th>{/** 上一个区块hash */}
                     <td>
                       {blockHash.prehash}
                       <button className="copyBtn">

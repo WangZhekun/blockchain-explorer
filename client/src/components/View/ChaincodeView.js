@@ -37,6 +37,9 @@ const styles = theme => ({
   }
 });
 
+/**
+ * chaincode视图
+ */
 export class ChaincodeView extends Component {
   constructor(props) {
     super(props);

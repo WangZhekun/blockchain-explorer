@@ -30,6 +30,10 @@ const styles = theme => ({
     },
 });
 
+/**
+ * 添加channel表单
+ * TODO:没有实现提交
+ */
 class ChannelForm extends Component {
     constructor(props, context) {
         super(props, context)

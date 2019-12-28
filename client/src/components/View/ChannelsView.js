@@ -36,6 +36,9 @@ const styles = theme => ({
   }
 });
 
+/**
+ * channel视图
+ */
 export class ChannelsView extends Component {
   constructor(props) {
     super(props);

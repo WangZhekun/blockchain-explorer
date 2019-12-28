@@ -35,6 +35,7 @@ import { transactionList } from '../store/actions/transactions/action-creators';
 import { txByOrg } from '../store/actions/charts/action-creators';
 
 export const Main = (props) => {
+  // 组装各子组件需要的props
   const blocksViewProps = {
     blockList: props.blockList,
     channel: props.channel,
@@ -103,7 +104,8 @@ export const Main = (props) => {
   )
 }
 
-export default connect((state) => ({
+// 连接React组件与Redux store，调用两次，返回一个注入了 state 和 action creator 的 React 组件
+export default connect((state) => ({ // 监听store变化，调用该函数，函数返回的对象与组件的props合并。参数state为store的state
   block: getBlock(state),
   blockList: getBlockList(state),
   chaincodes: getChaincodes(state),
@@ -116,7 +118,7 @@ export default connect((state) => ({
   transactionList: getTransactionList(state),
   channels: getChannels(state),
   txByOrg: getTxByOrg(state)
-}), {
+}), { // 该对象的每个方法都会被当做Redux action creator，这些属性会合并到组件的props中
     getBlockList: blockList,
     getChaincodes: chaincodes,
     getCountHeader: countHeader,

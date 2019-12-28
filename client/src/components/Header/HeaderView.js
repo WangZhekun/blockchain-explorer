@@ -40,7 +40,9 @@ const styles = theme => ({
 });
 
 
-
+/**
+ * 页面header部分，包含logo、菜单、消息、设置等板块
+ */
 export class HeaderView extends Component {
   constructor(props) {
     super(props);
@@ -55,12 +57,19 @@ export class HeaderView extends Component {
     }
   }
 
+  /**
+   * 展开/收起菜单
+   */
   toggle = () => {
     this.setState({
       isOpen: !this.state.isOpen
     });
   }
 
+  /**
+   * 刷新数据
+   * @param {Object} notification 消息
+   */
   handleData(notification) {
     this.props.getNotification(notification);
     let notifyArr = this.state.notifications;
@@ -69,7 +78,7 @@ export class HeaderView extends Component {
     this.setState({ notifyCount: this.state.notifyCount + 1 });
   }
 
-  componentDidMount() {
+  componentDidMount() { // 挂载后执行
     let arr = [];
     this.props.channelList.channels.forEach(element => {
       arr.push({
@@ -82,6 +91,9 @@ export class HeaderView extends Component {
     this.setState({ selectedOption: this.props.channel.currentChannel })
   }
 
+  /**
+   * 修改当前channel
+   */
   handleChange = (selectedOption) => {
     this.setState({ selectedOption: selectedOption.value });
     this.props.getChangeChannel(selectedOption.value);
@@ -95,14 +107,17 @@ export class HeaderView extends Component {
     this.setState({ modalOpen: false });
   }
 
+  /**
+   * 打开抽屉
+   */
   handleDrawOpen = (drawer) => {
     switch (drawer) {
-      case 'notifyDrawer': {
+      case 'notifyDrawer': { // 消息抽屉
         this.setState({ notifyDrawer: true });
         this.setState({ notifyCount: 0 });
         break;
       }
-      case 'adminDrawer': {
+      case 'adminDrawer': { // 设置操作抽屉
         this.setState({ adminDrawer: true });
         break;
       }
@@ -112,13 +127,16 @@ export class HeaderView extends Component {
     }
   }
 
+  /**
+   * 关闭抽屉
+   */
   handleDrawClose = (drawer) => {
     switch (drawer) {
-      case 'notifyDrawer': {
+      case 'notifyDrawer': { // 消息抽屉
       this.setState({ notifyDrawer: false });
         break;
       }
-      case 'adminDrawer': {
+      case 'adminDrawer': { // 设置操作抽屉
         this.setState({ adminDrawer: false });
         break;
       }
@@ -141,14 +159,14 @@ export class HeaderView extends Component {
           onMessage={this.handleData.bind(this)} reconnect={true} />
         <Navbar color="light" light expand="md" fixed="top">
           <NavbarBrand href="/"> <img src={Logo} className="logo" alt="Hyperledger Logo" /></NavbarBrand>
-          <NavbarToggler onClick={this.toggle} />
-          <Nav className="ml-auto" navbar>
-          <Button href="/#" className={classes.margin} >DASHBOARD</Button>
-          <Button href="#/network" className={classes.margin} >NETWORK</Button>
-          <Button href="#/blocks" className={classes.margin} >BLOCKS</Button>
-          <Button href="#/transactions" className={classes.margin} >TRANSACTIONS</Button>
-          <Button href="#/chaincodes" className={classes.margin} >CHAINCODES</Button>
-          <Button href="#/channels" className={classes.margin} >CHANNELS</Button>
+          <NavbarToggler onClick={this.toggle} /> {/* 宽度小于768px的小屏幕右侧的菜单列表图标 TODO：这个功能实现有问题，菜单一直展示 */}
+          <Nav className="ml-auto" navbar>{/* 菜单 */}
+            <Button href="/#" className={classes.margin} >DASHBOARD</Button>
+            <Button href="#/network" className={classes.margin} >NETWORK</Button>
+            <Button href="#/blocks" className={classes.margin} >BLOCKS</Button>
+            <Button href="#/transactions" className={classes.margin} >TRANSACTIONS</Button>
+            <Button href="#/chaincodes" className={classes.margin} >CHAINCODES</Button>
+            <Button href="#/channels" className={classes.margin} >CHANNELS</Button>
             <div className="channel-dropdown">
               <Select
                 placeholder="Select Channel..."
@@ -158,27 +176,29 @@ export class HeaderView extends Component {
                 onChange={this.handleChange}
                 options={this.state.channels} />
             </div>
-            <div className="admin-buttons">
+            <div className="admin-buttons"> {/* 消息通知按钮 */}
               <FontAwesome name="bell" className="bell" onClick={() => this.handleDrawOpen("notifyDrawer")} />
               <Badge className={classes.margin} badgeContent={this.state.notifyCount} color="primary"></Badge>
             </div>
-            <div className="admin-buttons">
+            <div className="admin-buttons"> {/* 设置操作按钮 */}
               <FontAwesome name="cog" className="cog" onClick={() => this.handleDrawOpen("adminDrawer")} />
             </div>
           </Nav>
         </Navbar>
+        {/* 消息抽屉 */}
         <Drawer anchor="right" open={this.state.notifyDrawer} onClose={() => this.handleDrawClose("notifyDrawer")}>
           <div
             tabIndex={0}
             role="button" >
-            <NotificationsPanel notifications={this.state.notifications} />
+            <NotificationsPanel notifications={this.state.notifications} /> {/* 消息面板 */}
           </div>
         </Drawer>
+        {/* 设置操作抽屉 */}
         <Drawer anchor="right" open={this.state.adminDrawer} onClose={() => this.handleDrawClose("adminDrawer")}>
           <div
             tabIndex={0}
             role="button">
-            <AdminPanel />
+            <AdminPanel /> {/* 设置操作面板 */}
           </div>
         </Drawer>
       </div>
@@ -186,6 +206,9 @@ export class HeaderView extends Component {
   }
 }
 
+// compose 从右向左组合多个函数，组合多个包装函数
+// withStyles 生成包装组件，给DOM注入class名称
+// connect 连接React组件与Redux store，返回新的已于Redux store连接的组件类
 export default compose(withStyles(styles), connect((state) => ({
   channel: getChannel(state),
   channelList: getChannelList(state),

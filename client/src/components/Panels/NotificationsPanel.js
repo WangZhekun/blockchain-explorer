@@ -22,11 +22,17 @@ const styles = theme => ({
   }
 });
 
+/**
+ * 消息抽屉
+ */
 export class NotificationsPanel extends Component {
   constructor(props) {
     super(props);
   }
 
+  /**
+   * 根据消息类型，获取图标
+   */
   avatarIcon = (type, classes) => {
     switch (type) {
       case 'block':
@@ -40,11 +46,10 @@ export class NotificationsPanel extends Component {
 
   render() {
     const { classes } = this.props;
-    if (this.props.notifications.length === 0) {
+    if (this.props.notifications.length === 0) { // 无消息
       return (
         <div className={classes.root}>
           <List component="nav">
-
             <ListItem button>
               <Typography variant="title">NO NOTIFICATIONS</Typography>
             </ListItem>

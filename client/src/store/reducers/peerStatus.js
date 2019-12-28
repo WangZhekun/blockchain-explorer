@@ -13,6 +13,7 @@ const InitialState = new Record({
 
 })
 
+// 获取指定channel上所有peer的状态
 const peerStatus = handleActions({
     [actionTypes.PEER_STATUS_POST]: (state = InitialState(), action) => state
         .set('peerStatus', action.payload.peers)

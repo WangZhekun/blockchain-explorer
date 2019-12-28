@@ -13,6 +13,7 @@ const InitialState = new Record({
 
 })
 
+// 获取指定channel上的所有chaincode
 const chaincodes = handleActions({
     [actionTypes.CHAINCODE_LIST]: (state = InitialState(), action) => state
         .set('chaincodes', action.payload.chaincode)

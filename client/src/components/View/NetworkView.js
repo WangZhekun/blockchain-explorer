@@ -37,6 +37,9 @@ const styles = theme => ({
   }
 });
 
+/**
+ * 网络视图
+ */
 export class NetworkView extends Component {
   constructor(props) {
     super(props);

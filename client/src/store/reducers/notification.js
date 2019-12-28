@@ -12,6 +12,7 @@ const InitialState = new Record({
     errors: {},
 });
 
+// 格式化通知消息
 const notification = handleActions({
     [actionTypes.NOTIFICATION_LOAD]: (state = InitialState(), action) => state
         .set('loaded', true)

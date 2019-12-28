@@ -11,6 +11,9 @@ import Dialog from 'material-ui/Dialog';
 import ChaincodeForm from '../Forms/ChaincodeForm';
 import ChaincodeModal from '../View/ChaincodeModal';
 
+/**
+ * chaincode列表
+ */
 class Chaincodes extends Component {
   constructor(props) {
     super(props);
@@ -23,37 +26,52 @@ class Chaincodes extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) { // props更新前执行
     this.setState({ chaincodeCount: this.props.countHeader.chaincodeCount });
   }
 
-  componentDidMount() {
+  componentDidMount() { // 挂载后执行
     setInterval(() => {
       this.props.getChaincodes(this.props.channel.currentChannel);
     }, 60000);
   }
 
+  /**
+   * 打开新增chaincode的表单弹框
+   */
   handleDialogOpen = () => {
     this.setState({ dialogOpen: true });
   };
 
+  /**
+   * 关闭新增chaincode的表单弹框
+   */
   handleDialogClose = () => {
     this.setState({ dialogOpen: false });
   };
 
+  /**
+   * 打开chaincode详情弹框
+   */
   sourceDialogOpen = chaincode => {
     this.setState({ chaincode: chaincode });
     this.setState({ sourceDialog: true });
   };
 
+  /**
+   * 关闭chaincode详情弹框
+   */
   sourceDialogClose = () => {
     this.setState({ sourceDialog: false });
   };
 
+  /**
+   * 获取Table列
+   */
   reactTableSetup = () => {
     return [
       {
-        Header: 'Chaincode Name',
+        Header: 'Chaincode Name', // Chaincode名称列
         accessor: 'chaincodename',
         Cell: row => (
           <a className="hash-hide" onClick={() => this.sourceDialogOpen(row.original)} href="#/chaincodes" >{row.value}</a>
@@ -68,7 +86,7 @@ class Chaincodes extends Component {
         filterAll: true
       },
       {
-        Header: 'Channel Name',
+        Header: 'Channel Name', // channel名称列
         accessor: 'channelName',
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -80,7 +98,7 @@ class Chaincodes extends Component {
         filterAll: true
       },
       {
-        Header: 'Path',
+        Header: 'Path', // chaincode文件地址
         accessor: 'path',
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -92,7 +110,7 @@ class Chaincodes extends Component {
         filterAll: true
       },
       {
-        Header: 'Transaction Count',
+        Header: 'Transaction Count', // 交易数量
         accessor: 'txCount',
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -104,7 +122,7 @@ class Chaincodes extends Component {
         filterAll: true
       },
       {
-        Header: 'Version',
+        Header: 'Version', // chaincode版本
         accessor: 'version',
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -123,7 +141,7 @@ class Chaincodes extends Component {
       <div >
         <Button className="button" onClick={() => this.handleDialogOpen()}>
           Add Chaincode
-          </Button>
+        </Button>
         <ReactTable
           data={this.props.chaincodes}
           columns={this.reactTableSetup()}
@@ -132,6 +150,7 @@ class Chaincodes extends Component {
           filterable
           minRows={0}
         />
+      {/** 新增chaincode的表单弹框 */}
       <Dialog
         open={this.state.dialogOpen}
         onClose={this.handleDialogClose}
@@ -140,6 +159,7 @@ class Chaincodes extends Component {
       >
         <ChaincodeForm />
       </Dialog>
+      {/** chaincode详情弹框 */}
       <Dialog
         open={this.state.sourceDialog}
         onClose={this.sourceDialogClose}

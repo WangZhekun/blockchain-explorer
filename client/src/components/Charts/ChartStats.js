@@ -31,6 +31,9 @@ import {
 } from '../../store/selectors/selectors';
 import classnames from 'classnames';
 
+/**
+ * 区块和交易的实时统计折线图
+ */
 export class ChartStats extends Component {
   constructor(props) {
     super(props);
@@ -40,18 +43,21 @@ export class ChartStats extends Component {
     };
     }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) { // props更新前执行
     if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
-      this.syncData(nextProps.channel.currentChannel);
+      this.syncData(nextProps.channel.currentChannel); // 更新统计数据
     }
   }
 
-  componentDidMount() {
-    setInterval(() => {
+  componentDidMount() { // 挂载后执行
+    setInterval(() => { // 每6秒更新一次数据
       this.syncData(this.props.channel.currentChannel);
     }, 6000);
   }
 
+  /**
+   * 更新统计数据
+   */
   syncData = currentChannel => {
     this.props.getBlocksPerMin(currentChannel);
     this.props.getBlocksPerHour(currentChannel);
@@ -59,19 +65,22 @@ export class ChartStats extends Component {
     this.props.getTxPerHour(currentChannel);
   };
 
-   timeDataSetup = (chartData = []) => {
-    let displayData;
-    let dataMax = 0;
+  /**
+   * 格式化折线图需要展示的数据
+   */
+  timeDataSetup = (chartData = []) => {
+    let displayData; // 展示数据
+    let dataMax = 0; // 纵轴的最大数
     displayData = chartData.map(data => {
-        if (parseInt(data.count, 10) > dataMax) {
+      if (parseInt(data.count, 10) > dataMax) {
         dataMax = parseInt(data.count, 10);
-        }
+      }
 
-        return {
+      return {
         datetime: moment(data.datetime)
           .tz(moment.tz.guess())
-          .format('h:mm A'),
-          count: data.count
+          .format('h:mm A'), // 时间
+        count: data.count // 数量
       };
     });
 
@@ -79,7 +88,7 @@ export class ChartStats extends Component {
 
     return {
       displayData: displayData,
-      dataMax: dataMax
+      dataMax: dataMax // 纵轴的最大数
     };
   };
 
@@ -98,7 +107,7 @@ export class ChartStats extends Component {
           </CardHeader>
           <CardBody>
             <Nav tabs>
-              <NavItem>
+              <NavItem>{ /* 每小时的区块数 */}
                 <NavLink
                   className={classnames({
                     active: this.state.activeTab === "1"
@@ -110,7 +119,7 @@ export class ChartStats extends Component {
                   BLOCKS / HOUR
                      </NavLink>
               </NavItem>
-              <NavItem>
+              <NavItem>{ /* 每分钟的区块数 */}
                 <NavLink
                   className={classnames({
                     active: this.state.activeTab === "2"
@@ -122,7 +131,7 @@ export class ChartStats extends Component {
                   BLOCKS / MIN
                         </NavLink>
               </NavItem>
-              <NavItem>
+              <NavItem>{ /* 每小时的交易数 */}
                 <NavLink
                   className={classnames({
                     active: this.state.activeTab === "3"
@@ -134,7 +143,7 @@ export class ChartStats extends Component {
                   TX / HOUR
                         </NavLink>
               </NavItem>
-              <NavItem>
+              <NavItem>{ /* 每分钟的交易数 */}
                 <NavLink
                   className={classnames({
                     active: this.state.activeTab === "4"
@@ -148,22 +157,22 @@ export class ChartStats extends Component {
               </NavItem>
             </Nav>
             <TabContent activeTab={this.state.activeTab}>
-              <TabPane tabId="1">
+              <TabPane tabId="1">{ /* 每小时的区块数 */}
                 <TimeChart
                   chartData={this.timeDataSetup(this.props.blockPerHour.rows)}
                 />
               </TabPane>
-              <TabPane tabId="2">
+              <TabPane tabId="2">{ /* 每分钟的区块数 */}
                 <TimeChart
                   chartData={this.timeDataSetup(this.props.blockPerMin.rows)}
                 />
               </TabPane>
-              <TabPane tabId="3">
+              <TabPane tabId="3">{ /* 每小时的交易数 */}
                 <TimeChart
                   chartData={this.timeDataSetup(this.props.txPerHour.rows)}
                 />
               </TabPane>
-              <TabPane tabId="4">
+              <TabPane tabId="4">{ /* 每分钟的交易数 */}
                 <TimeChart
                   chartData={this.timeDataSetup(this.props.txPerMin.rows)}
                 />
@@ -178,11 +187,11 @@ export class ChartStats extends Component {
 
 export default connect(
   state => ({
-  blockPerHour: getBlockperHour(state),
-  blockPerMin: getBlockPerMin(state),
-  txPerHour: getTxPerHour(state),
-  txPerMin: getTxPerMin(state),
-  channel: getChannel(state)
+    blockPerHour: getBlockperHour(state), // 每小时的区块数
+    blockPerMin: getBlockPerMin(state), // 每分钟的区块数
+    txPerHour: getTxPerHour(state), // 每小时的交易数
+    txPerMin: getTxPerMin(state), // 每分钟的交易数
+    channel: getChannel(state)
   }),
   {
     getBlocksPerHour: blocksPerHour,

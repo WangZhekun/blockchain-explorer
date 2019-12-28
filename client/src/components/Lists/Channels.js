@@ -7,25 +7,31 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import matchSorter from 'match-sorter';
 
+/**
+ * channel列表
+ */
 class Channels extends Component {
   constructor(props) {
     super(props);
   }
 
-  componentWillMount() {
+  componentWillMount() { // 挂载前，更新数据
    this.props.getChannels()
   }
 
-  componentDidMount() {
-    setInterval(() => {
-    this.props.getChannels()
+  componentDidMount() { // 挂载后执行
+    setInterval(() => { // 每6小时同步数据
+      this.props.getChannels()
     }, 600000);
   }
 
+  /**
+   * 返回Table列
+   */
   reactTableSetup = () => {
     return [
       {
-        Header: 'ID',
+        Header: 'ID', // channelID
         accessor: 'id',
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -38,7 +44,7 @@ class Channels extends Component {
         width: 100
       },
       {
-        Header: 'Channel Name',
+        Header: 'Channel Name', // channel名称
         accessor: 'channelname',
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -50,7 +56,7 @@ class Channels extends Component {
         filterAll: true
       },
       {
-        Header: 'Channel Hash',
+        Header: 'Channel Hash', // channel hash
         accessor: 'channel_hash',
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -62,7 +68,7 @@ class Channels extends Component {
         filterAll: true
       },
       {
-        Header: 'Blocks',
+        Header: 'Blocks', // 区块数
         accessor: 'blocks',
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -74,7 +80,7 @@ class Channels extends Component {
         filterAll: true,
         width: 125
       }, {
-        Header: 'Transactions',
+        Header: 'Transactions', // 交易数
         accessor: 'transactions',
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -87,7 +93,7 @@ class Channels extends Component {
         width: 125
       },
       {
-        Header: 'Timestamp',
+        Header: 'Timestamp', // 时间戳（channel创建时间）
         accessor: 'createdat',
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -104,14 +110,14 @@ class Channels extends Component {
   render() {
     return (
       <div className="blockPage">
-                <ReactTable
-                  data={this.props.channels}
-                  columns={this.reactTableSetup()}
-                  defaultPageSize={5}
-                  className="-striped -highlight"
-                  filterable
-                  minRows={0}
-                />
+        <ReactTable
+          data={this.props.channels}
+          columns={this.reactTableSetup()}
+          defaultPageSize={5}
+          className="-striped -highlight"
+          filterable
+          minRows={0}
+        />
       </div>
     );
   }

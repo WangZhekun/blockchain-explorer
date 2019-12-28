@@ -14,6 +14,7 @@ const InitialState = new Record({
 
 })
 
+// 获取指定channel上的0号区块及以后的，0号交易及以后的所有交易信息
 const transactionList = handleActions({
     [actionTypes.TX_LIST]: (state = InitialState(), action) => {
         action.payload.rows.forEach( element => {

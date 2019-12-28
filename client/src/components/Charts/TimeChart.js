@@ -6,6 +6,10 @@ import React from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import Card, { CardContent } from 'material-ui/Card';
 
+/**
+ * 折线图
+ * @param {Object} props 具有chartData属性，是折线图的数据源
+ */
 const TimeChart = ({ chartData }) => {
 
   return (

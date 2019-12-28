@@ -15,6 +15,9 @@ import {
 } from 'reactstrap';
 import FontAwesome from 'react-fontawesome';
 
+/**
+ * 仪表盘，展示统计数据
+ */
 export class DashboardView extends Component {
   constructor(props) {
     super(props);
@@ -23,7 +26,7 @@ export class DashboardView extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) { // 该生命周期使用至React 17，已挂载的组件接收新的 props 之前被调用
     if (Object.keys(nextProps.notification).length !== 0 && this.props.notification !== nextProps.notification) {
       let arr = this.state.notifications;
       arr.unshift(nextProps.notification);
@@ -34,15 +37,19 @@ export class DashboardView extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount() { // 组件挂载后（插入 DOM 树中）立即调用
     setInterval(() => {
       this.props.getTxByOrg(this.props.channel.currentChannel);
       this.props.getCountHeader(this.props.channel.currentChannel);
     }, 3000);
 
-    this.setNotifications(this.props.blockList)
+    this.setNotifications(this.props.blockList) // 更新notifications
   }
 
+  /**
+   * 更新notifications
+   * 按照react的文档，notifications可以放到 Render 中处理，而非放在state
+   */
   setNotifications = (blockList) => {
     let notificationsArr = [];
     if (blockList !== undefined) {
@@ -66,7 +73,7 @@ export class DashboardView extends Component {
       <div className="view-fullwidth" >
         <div className="dashboard" >
           <div className="dash-stats">
-            <Row>
+            <Row>{ /* 区块、交易、节点、chaincode的统计数据 */ }
               <Card className="count-card dark-card">
                 <CardBody>
                   <h1>{this.props.countHeader.latestBlock}</h1>
@@ -93,20 +100,20 @@ export class DashboardView extends Component {
               </Card>
             </Row>
           </div>
-          <Row>
+          <Row>{ /* 分析、组织、动态、peer的图表 */ }
             <Col lg="6">
-              <ChartStats />
+              <ChartStats />{ /** 区块和交易的实时统计折线图 */}
             </Col>
             <Col lg="6">
-              <OrgPieChart txByOrg={this.props.txByOrg} />
+              <OrgPieChart txByOrg={this.props.txByOrg} />{ /** 各组织的交易占比饼图 */}
             </Col>
           </Row>
           <Row className="lower-dash">
             <Col lg="6">
-              <TimelineStream notifications={this.state.notifications} />
+              <TimelineStream notifications={this.state.notifications} />{ /** 区块创建动态图 */}
             </Col>
             <Col lg="6">
-              <PeersHealth peerStatus={this.props.peerStatus} channel={this.props.channel.currentChannel} />
+              <PeersHealth peerStatus={this.props.peerStatus} channel={this.props.channel.currentChannel} />{ /** peer节点状态表 */}
             </Col>
           </Row>
         </div >

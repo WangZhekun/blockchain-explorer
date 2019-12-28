@@ -13,6 +13,7 @@ const InitialState = new Record({
 
 })
 
+// 获取加入了指定channel的peer列表
 const peerList = handleActions({
     [actionTypes.PEER_LIST_POST]: (state = InitialState(), action) => state
         .set('peerList', action.payload.peers)

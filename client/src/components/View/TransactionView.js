@@ -7,7 +7,7 @@ import { withStyles } from "material-ui/styles";
 import PropTypes from "prop-types";
 import FontAwesome from "react-fontawesome";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import Typography from "material-ui/Typography";
+import Typography from "material-ui/Typography"; // 字体排版
 
 import moment from "moment-timezone";
 import {
@@ -34,25 +34,31 @@ const writes = {
   color: "#DD8016"
 };
 
+/**
+ * 交易详情
+ */
 export class TransactionView extends Component {
   constructor(props, context) {
     super(props, context);
-    this.state = {
+    this.state = { // TODO: loading没用
       loading: false
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) { // props更新前执行
     this.setState({ loading: false });
   }
 
+  /**
+   * 关闭
+   */
   handleClose = () => {
     this.props.onClose();
   };
 
   render() {
     const { classes } = this.props;
-    if (this.props.transaction.read_set === undefined) {
+    if (this.props.transaction.read_set === undefined) { // 交易的写集合为空
       return (
         <div>
           <div>
@@ -86,10 +92,10 @@ export class TransactionView extends Component {
               </button>
             </CardTitle>
             <CardBody>
-              <Table striped hover responsive className="table-striped">
+              <Table striped hover responsive className="table-striped">{/** 竖直方向排列的表格 */}
                 <tbody>
                   <tr>
-                    <th>Transaction ID:</th>
+                    <th>Transaction ID:</th>{/** 交易ID */}
                     <td>
                       {this.props.transaction.txhash}
                       <button className="copyBtn">
@@ -100,23 +106,23 @@ export class TransactionView extends Component {
                     </td>
                   </tr>
                   <tr>
-                    <th>Creator MSP:</th>
+                    <th>Creator MSP:</th>{/** 创建者的mspID */}
                     <td>{this.props.transaction.creator_msp_id}</td>
                   </tr>
                   <tr>
-                    <th>Endoser:</th>
+                    <th>Endoser:</th>{/** 背书者的mspID */}
                     <td>{this.props.transaction.endorser_msp_id}</td>
                   </tr>
                   <tr>
-                    <th>Chaincode Name:</th>
+                    <th>Chaincode Name:</th>{/** chaincode名称 */}
                     <td>{this.props.transaction.chaincodename}</td>
                   </tr>
                   <tr>
-                    <th>Type:</th>
+                    <th>Type:</th>{/** 交易类型 */}
                     <td>{this.props.transaction.type}</td>
                   </tr>
                   <tr>
-                    <th>Time:</th>
+                    <th>Time:</th>{/** 交易时间 */}
                     <td>
                       {moment(this.props.transaction.createdt)
                         .tz(moment.tz.guess())
@@ -124,7 +130,7 @@ export class TransactionView extends Component {
                     </td>
                   </tr>
                   <tr>
-                    <th style={reads}>Reads:</th>
+                    <th style={reads}>Reads:</th>{/** 读集合 */}
                     <td>
                       {" "}
                       {this.props.transaction.read_set.map(function(
@@ -134,7 +140,7 @@ export class TransactionView extends Component {
                         return item === null ? (
                           ""
                         ) : (
-                          <li key={index}>
+                          <li key={index}>{/** TODO：这里是不是缺个ul */}
                             <Typography variant="subheading">
                               {" "}
                               {item.chaincode}
@@ -165,7 +171,7 @@ export class TransactionView extends Component {
                     </td>
                   </tr>
                   <tr>
-                    <th style={writes}>Writes:</th>
+                    <th style={writes}>Writes:</th>{/** 写集合 */}
                     <td>
                       {" "}
                       {this.props.transaction.write_set.map(function(

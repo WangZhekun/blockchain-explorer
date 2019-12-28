@@ -13,6 +13,7 @@ const InitialState = new Record({
 
 })
 
+// 查询现在时间之前的1天的每小时产生的区块数量
 const blockList = handleActions({
     [actionTypes.BLOCK_LIST_POST]: (state = InitialState(), action) => state
         .set('blockList', action.payload.rows)

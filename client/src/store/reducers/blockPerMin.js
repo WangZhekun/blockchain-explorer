@@ -12,6 +12,7 @@ const InitialState = new Record({
     errors: {},
 })
 
+// 查询现在时间之前的1个小时的每分钟产生的区块数量
 const blockPerMin = handleActions({
     [actionTypes.BLOCK_CHART_MIN]: (state = InitialState(), action) => state
         .set('blockPerMin', action.payload)

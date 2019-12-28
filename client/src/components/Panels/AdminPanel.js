@@ -16,19 +16,23 @@ import { MenuItem } from 'material-ui/Menu';
 import { FormControl, FormHelperText } from 'material-ui/Form';
 import Select from 'material-ui/Select';
 
+/**
+ * 设置操作面板
+ */
 class AdminPanel extends Component {
     constructor(props, context) {
         super(props, context);
     }
 
     handleChange = () => {
-
+        // TODO：修改channel
     }
 
     render() {
         return (
             <div>
                 <Typography variant="headline"><FontAwesome name="cogs" /> ADMIN PANEL</Typography>
+                {/** 手风琴 —— channel管理 */}
                 <ExpansionPanel>
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography variant="subheading">MANAGE CHANNEL  </Typography>
@@ -72,6 +76,7 @@ class AdminPanel extends Component {
                             </div> */}
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
+                {/** 手风琴 —— 添加channel */}
                 <ExpansionPanel>
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography variant="subheading">ADD CHANNEL</Typography>

@@ -44,6 +44,7 @@ export class LandingPage extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
+      // 发送请求
       this.props.getPeerList(nextProps.channel.currentChannel);
       this.props.getCountHeader(nextProps.channel.currentChannel);
       this.props.getPeerStatus(nextProps.channel.currentChannel);

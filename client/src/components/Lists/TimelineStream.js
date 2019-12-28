@@ -10,10 +10,13 @@ import { Card, CardHeader, CardBody } from 'reactstrap';
 import { Badge } from 'reactstrap';
 import Timeago from 'react-timeago';
 
+/**
+ * 时间线
+ */
 class TimelineStream extends Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.state = { // TODO：不需要state
             loading: false,
             notifications: []
         }

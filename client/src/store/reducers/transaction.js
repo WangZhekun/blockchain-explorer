@@ -12,6 +12,7 @@ const InitialState = new Record({
     errors: {},
 });
 
+// 获取指定channel，指定ID的交易信息
 const transaction = handleActions({
     [actionTypes.TRANSACTION_POST]: (state = InitialState(), action) => state
         .set('loaded', true)

@@ -6,6 +6,11 @@ import { createAction } from 'redux-actions';
 import * as actionTypes from '../action-types';
 import { get } from '../../../services/request.js';
 
+/**
+ * 获取指定channel的统计数据
+ * 异步action创建函数
+ * @param {string} channel channel名称
+ */
 export const countHeader = (channel) => dispatch => {
     get('/api/status/' + channel)
         .then(resp => {

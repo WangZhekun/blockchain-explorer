@@ -13,6 +13,7 @@ const InitialState = new Record({
     errors: {},
 });
 
+// 获取指定channel的统计数据
 const countHeader = handleActions({
     [actionTypes.COUNT_HEADER_POST]: (state = InitialState(), action) => state
         .set('loaded', true)

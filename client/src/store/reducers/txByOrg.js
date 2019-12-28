@@ -13,6 +13,7 @@ const InitialState = new Record({
 
 })
 
+// 查询指定channel上各组织的交易数量
 const txByOrg = handleActions({
     [actionTypes.TX_CHART_ORG]: (state = InitialState(), action) => state
         .set('txByOrg', action.payload.rows)

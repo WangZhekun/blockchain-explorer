@@ -37,17 +37,23 @@ const styles = theme => ({
   }
 });
 
+/**
+ * 交易视图
+ */
 export class TransactionsView extends Component {
   constructor(props) {
     super(props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) { // props更新前执行
     if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
       this.syncData(nextProps.channel.currentChannel)
     }
   }
 
+  /**
+   * 同步数据
+   */
   syncData = (currentChannel) => {
     this.props.getCountHeader(currentChannel);
     this.props.getLatestBlock(currentChannel);

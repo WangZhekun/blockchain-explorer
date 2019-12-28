@@ -13,13 +13,12 @@ const InitialState = new Record({
 
 })
 
-
 const channel = handleActions({
-    [actionTypes.CHANNEL]: (state = InitialState(), action) => state
+    [actionTypes.CHANNEL]: (state = InitialState(), action) => state // 获取默认channel
         .set('loaded', true)
         .set('channel', action.payload)
         .set('errors', action.error),
-    [actionTypes.CHANGECHANNEL]: (state = InitialState(), action) => state
+    [actionTypes.CHANGECHANNEL]: (state = InitialState(), action) => state // 修改默认channel名
         .set('loaded', true)
         .set('channel', action.payload)
         .set('errors', action.error)

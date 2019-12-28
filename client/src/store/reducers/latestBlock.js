@@ -12,6 +12,7 @@ const InitialState = new Record({
     errors: {},
 });
 
+// 获取指定channel的最后一个区块
 const latestBlock = handleActions({
     [actionTypes.LATEST_BLOCK]: (state = InitialState(), action) => state
         .set('loaded', true)

@@ -32,11 +32,11 @@ class App extends Component {
   }
 
   componentWillMount() {
-    setTimeout(() => this.setState({ loading: false }), 6000);
+    setTimeout(() => this.setState({ loading: false }), 6000); // loading 6秒
   }
 
   render() {
-    if (this.state.loading) {
+    if (this.state.loading) { // 展示loading状态
       return (
         <LandingPage />
       );
@@ -45,7 +45,7 @@ class App extends Component {
     return (
       <MuiThemeProvider theme={muiTheme} >
         <div>
-            <HeaderView />
+          <HeaderView />
           <Main />
         </div>
       </MuiThemeProvider>

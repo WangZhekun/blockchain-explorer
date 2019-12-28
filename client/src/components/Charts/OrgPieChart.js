@@ -9,6 +9,9 @@ import txByOrg from '../../store/reducers/txByOrg';
 
 const colors = ['#0B091A', '#6283D0', '#0D3799', '#7C7C7C'];
 
+/**
+ * 各组织交易占比的饼图
+ */
 class OrgPieChart extends Component {
   constructor(props) {
     super(props);
@@ -21,12 +24,17 @@ class OrgPieChart extends Component {
     }
   }
 
+  /**
+   * 从orgData中取数据到state.data
+   * TODO：将这部分操作放到render中处理，不需要state
+   */
   orgDataSetup = (orgData) => {
     let temp = [];
     let index = 0;
     orgData.txByOrg.forEach(element => {
       temp.push({
-        value: parseInt(element.count), name: element.creator_msp_id,
+        value: parseInt(element.count), 
+        name: element.creator_msp_id,
         fill: colors[index]
       });
       index++;
@@ -34,11 +42,11 @@ class OrgPieChart extends Component {
     this.setState({ data: temp });
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) { // props更新前
     this.orgDataSetup(nextProps)
   }
 
-  componentDidMount() {
+  componentDidMount() { // 挂载后执行
     this.orgDataSetup(this.props)
   }
 

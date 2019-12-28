@@ -13,7 +13,7 @@ const InitialState = new Record({
 
 })
 
-
+// 获取默认peer加入的所有channel名
 const channelList = handleActions({
     [actionTypes.CHANNEL_LIST]: (state = InitialState(), action) => state
         .set('loaded', true)

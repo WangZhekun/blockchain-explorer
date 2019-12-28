@@ -37,6 +37,9 @@ const styles = theme => ({
   }
 });
 
+/**
+ * 区块视图
+ */
 export class BlocksView extends Component {
   constructor(props) {
     super(props);
@@ -45,12 +48,15 @@ export class BlocksView extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) { // props更新前调用
     if (nextProps.channel.currentChannel !== this.props.channel.currentChannel && nextProps.channel.currentChannel !== undefined) {
       this.syncData(nextProps.channel.currentChannel)
     }
   }
 
+  /**
+   * 同步数据
+   */
   syncData = (currentChannel) => {
     this.props.getCountHeader(currentChannel);
     this.props.getLatestBlock(currentChannel);

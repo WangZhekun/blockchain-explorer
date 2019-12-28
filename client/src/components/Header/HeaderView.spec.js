@@ -14,7 +14,7 @@ const setup = () => {
     },
     classes: {
       margin: 'Connect-HeaderView--margin-1',
-    padding: 'Connect-HeaderView--padding-2'
+      padding: 'Connect-HeaderView--padding-2'
     },
     getNotification: jest.fn(),
     notification: {}

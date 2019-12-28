@@ -20,7 +20,31 @@ import chaincodes from './chaincodes';
 import notification from './notification';
 import channels from './channels';
 import txByOrg from './txByOrg';
-export default combineReducers({
+
+/**
+ * state的各属性分别是各子reducer的名称
+ * state结构：
+ * {
+    peerList: {},
+    channelList: {},
+    countHeader: {},
+    blockList: {},
+    channel: {},
+    transactionList: {},
+    block: {},
+    transaction: {},
+    blockPerMin: {},
+    blockPerHour: {},
+    txPerMin: {},
+    txPerHour: {},
+    chaincodes: {},
+    notification: {},
+    txByOrg: {},
+    channels: {}, 
+    peerStatus: {}
+ * }
+ */
+export default combineReducers({ // 合并reducer
     peerList,
     channelList,
     countHeader,

@@ -14,7 +14,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import App from './components/App/App';
 import { unregister } from './registerServiceWorker';
 
-const store = createStore();
+const store = createStore(); // 创建store
 store.dispatch(getChannel());
 store.dispatch(getChannelList());
 

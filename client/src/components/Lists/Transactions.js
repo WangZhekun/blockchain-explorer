@@ -11,6 +11,9 @@ import ReactTable from "react-table";
 import "react-table/react-table.css";
 import matchSorter from "match-sorter";
 
+/**
+ * 交易列表
+ */
 class Transactions extends Component {
   constructor(props) {
     super(props);
@@ -21,23 +24,34 @@ class Transactions extends Component {
     };
   }
 
+  /**
+   * 打开交易详情弹框
+   */
   handleDialogOpen = tid => {
     this.props.getTransactionInfo(this.props.channel.currentChannel, tid);
     this.setState({ dialogOpen: true });
   };
 
+  /**
+   * 关闭交易详情弹框
+   */
   handleDialogClose = () => {
     this.setState({ dialogOpen: false });
   };
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) { // props更新前执行
     this.setState({ totalTransactions: this.props.countHeader.txCount });
   }
+
+  /** 
+   * 点击眼睛图标，展示/收起全部的交易ID
+   */
   handleEye = (row, val) => {
     const data = Object.assign({}, this.state.selection, { [row.index]: !val });
     this.setState({ selection: data });
   };
-  componentDidMount() {
+
+  componentDidMount() { // 挂载后执行
     const selection = {};
     this.props.transactionList.forEach(element => {
       selection[element.blocknum] = false;
@@ -46,9 +60,9 @@ class Transactions extends Component {
   }
 
   render() {
-    const columnHeaders = [
+    const columnHeaders = [ // Table列
       {
-        Header: "Creator",
+        Header: "Creator", // 创建者
         accessor: "creator_msp_id",
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -60,7 +74,7 @@ class Transactions extends Component {
         filterAll: true
       },
       {
-        Header: "Tx Id",
+        Header: "Tx Id", // 交易ID
         accessor: "txhash",
         Cell: row => (
           <span>
@@ -92,7 +106,7 @@ class Transactions extends Component {
         filterAll: true
       },
       {
-        Header: "Type",
+        Header: "Type", // 交易类型
         accessor: "type",
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -104,7 +118,7 @@ class Transactions extends Component {
         filterAll: true
       },
       {
-        Header: "Chaincode",
+        Header: "Chaincode", // chaincode名称
         accessor: "chaincodename",
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -116,7 +130,7 @@ class Transactions extends Component {
         filterAll: true
       },
       {
-        Header: "Timestamp",
+        Header: "Timestamp", // 时间戳
         accessor: "createdt",
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -139,7 +153,7 @@ class Transactions extends Component {
           filterable
           minRows={0}
         />
-
+        {/** 交易详情弹框 */}
         <Dialog
           open={this.state.dialogOpen}
           onClose={this.handleDialogClose}

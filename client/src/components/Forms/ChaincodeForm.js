@@ -31,6 +31,10 @@ const styles = theme => ({
   }
 });
 
+/**
+ * 新增chaincode的表单
+ * TODO：没有添加请求
+ */
 class ChaincodeForm extends Component {
   render() {
     const { classes } = this.props;

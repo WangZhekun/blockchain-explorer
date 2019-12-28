@@ -12,6 +12,10 @@ import "react-table/react-table.css";
 import matchSorter from "match-sorter";
 import FontAwesome from "react-fontawesome";
 import find from "lodash/find";
+
+/**
+ * 区块Table
+ */
 class Blocks extends Component {
   constructor(props) {
     super(props);
@@ -23,36 +27,53 @@ class Blocks extends Component {
     };
   }
 
+  /**
+   * 打开交易详情弹框
+   */
   handleDialogOpen = tid => {
     this.props.getTransactionInfo(this.props.channel.currentChannel, tid);
     this.setState({ dialogOpen: true });
   };
 
+  /**
+   * 关闭交易详情弹框
+   */
   handleDialogClose = () => {
     this.setState({ dialogOpen: false });
   };
 
+  /**
+   * 打开区块hash对应的区块详情弹框
+   */
   handleDialogOpenBlockHash = rowValue => {
     const data = find(this.props.blockList, function(item) {
       return item.blockhash === rowValue;
     });
     this.setState({ dialogOpenBlockHash: true, blockHash: data });
   };
+
+  /**
+   * 关闭区块hash对应的区块详情弹框
+   */
   handleDialogCloseBlockHash = () => {
     this.setState({ dialogOpenBlockHash: false });
   };
 
+  /**
+   * 点击眼睛图标，展示/收起全部的hash
+   */
   handleEye = (row, val) => {
     const data = Object.assign({}, this.state.selection, { [row.index]: !val });
     this.setState({ selection: data });
   };
-  componentWillReceiveProps(nextProps) {
+
+  componentWillReceiveProps(nextProps) { // props更新前执行
     this.setState({ totalBlocks: this.props.countHeader.latestBlock });
   }
 
-  componentDidMount() {
+  componentDidMount() { // 挂载后执行
     setInterval(() => {
-      this.props.getBlockList(this.props.channel.currentChannel);
+      this.props.getBlockList(this.props.channel.currentChannel); // TODO:问题：这里为什么直接掉了异步action创建函数，该函数的返回值为一个函数(dispatch) => {Promise.resolve())？
     }, 60000);
     const selection = {};
     this.props.blockList.forEach(element => {
@@ -61,10 +82,13 @@ class Blocks extends Component {
     this.setState({ selection: selection });
   }
 
+  /**
+   * 获取Table列
+   */
   reactTableSetup = () => {
     return [
       {
-        Header: "Block Number",
+        Header: "Block Number", // 区块编号
         accessor: "blocknum",
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -77,7 +101,7 @@ class Blocks extends Component {
         width: 150
       },
       {
-        Header: "Number of Tx",
+        Header: "Number of Tx", // 交易数量
         accessor: "txcount",
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -90,7 +114,7 @@ class Blocks extends Component {
         width: 150
       },
       {
-        Header: "Data Hash",
+        Header: "Data Hash", // hash
         accessor: "datahash",
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -102,7 +126,7 @@ class Blocks extends Component {
         filterAll: true
       },
       {
-        Header: "Block Hash",
+        Header: "Block Hash", // 区块hash
         accessor: "blockhash",
         Cell: row => (
           <span>
@@ -135,7 +159,7 @@ class Blocks extends Component {
         filterAll: true
       },
       {
-        Header: "Previous Hash",
+        Header: "Previous Hash", // 上一个区块hash
         accessor: "prehash",
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -148,7 +172,7 @@ class Blocks extends Component {
         width: 150
       },
       {
-        Header: "Transactions",
+        Header: "Transactions", // 区块内的交易
         accessor: "txhash",
         Cell: row => (
           <ul>
@@ -195,6 +219,7 @@ class Blocks extends Component {
           filterable
           minRows={0}
         />
+        {/** 交易详情弹框 */}
         <Dialog
           open={this.state.dialogOpen}
           onClose={this.handleDialogClose}
@@ -206,6 +231,7 @@ class Blocks extends Component {
             onClose={this.handleDialogClose}
           />
         </Dialog>
+        {/** 区块详情弹框 */}
         <Dialog
           open={this.state.dialogOpenBlockHash}
           onClose={this.handleDialogCloseBlockHash}

@@ -13,6 +13,7 @@ const InitialState = new Record({
 
 })
 
+// 查询现在时间之前的1个小时的每分钟产生的交易数量
 const txPerMin = handleActions({
     [actionTypes.TX_CHART_MIN]: (state = InitialState(), action) => state
         .set('txPerMin', action.payload)
